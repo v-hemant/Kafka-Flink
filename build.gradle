@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.dataartisans'
+version = '1.0-SNAPSHOT'
+
+description = """Flink Quickstart Job"""
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+
+
+repositories {
+        
+     maven { url "https://repository.apache.org/content/repositories/snapshots/" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.apache.flink', name: 'flink-connector-kafka', version:'0.10.1'
+    compile group: 'com.typesafe.akka', name: 'akka-actor_2.10', version: '2.1.0'
+    compile group: 'com.typesafe.akka', name: 'akka-camel_2.10', version: '2.3.9'
+
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.dataartisans.ReadFromKafka'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
